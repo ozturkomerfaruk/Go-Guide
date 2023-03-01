@@ -24,7 +24,7 @@ func NewPayment() *Payment {
 	return p
 }
 
-func main() {
+func mains() {
 	user1 := &User{
 		ID: 1,
 		FirstName: "ömer",
