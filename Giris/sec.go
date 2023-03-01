@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func mainb() {
 	//if let
 	if foo := 2; foo == 2 {
 		fmt.Println("koşulda")
@@ -57,6 +57,11 @@ func main() {
 		Bu nedenle, cap() fonksiyonu yalnızca slice'larla kullanılabilir.
 	*/
 
-	fmt.Println(len(myArr))
-	fmt.Println(cap(myArr))
+	bigArr := make([]int, 5)
+	bigArr = append(bigArr, 1)
+
+	fmt.Println(len(bigArr), "len bigArr")
+	fmt.Println(cap(bigArr), "cap bigArr")
+	//cap 10 değeri döndürür ama len 6 değerini döndürür. Bunun en büyük sebebi cap de kapasite artırıldı
+	//ve bu 5lik olarak artırıldı.
 }

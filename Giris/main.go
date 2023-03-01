@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func main() {
+func maina() {
 	// String to Int
 	var myString = "1"
 	number, err := strconv.Atoi(myString) // err yerine _ koyabilirsin.
