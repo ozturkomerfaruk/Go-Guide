@@ -19,3 +19,7 @@
 ## Array & Map
 
 <img width="605" alt="image" src="https://user-images.githubusercontent.com/56068905/221902242-1bee1bfa-0ae0-45f5-b1b1-b046347eabf3.png">
+
+## Kanal
+
+<img width="553" alt="image" src="https://user-images.githubusercontent.com/56068905/222152423-e30ff9a4-9daf-48a1-aa74-404e8e325273.png">
