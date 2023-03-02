@@ -13,7 +13,7 @@ type User struct {
 	Username string `json:"name"`
 }
 
-func main() {
+func mains() {
 	db, err := sql.Open("mysql", "root:qwer1234@/omerdb1")
 	if err != nil {
 		panic(err.Error())
