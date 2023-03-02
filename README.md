@@ -210,3 +210,63 @@ if err != nil {
 }
 fmt.Println(string(b))
 ```
+
+CSV Formatı
+CSV, Comma-Separated Values (Virgülle Ayrılmış Değerler) kısaltmasıdır ve veri depolama veya veri paylaşımı için sıklıkla kullanılan bir dosya formatıdır. CSV dosyaları, metin tabanlıdır ve bir tablo veya veri setini temsil etmek için sütunlar ve satırlar kullanır.
+
+CSV formatında, her satır ayrı bir veri kaydını temsil eder ve sütunlar virgülle ayrılmış verileri içerir. Satırlar genellikle bir satır sonu karakteri ile ayrılır.
+
+Örneğin, aşağıdaki örnek bir CSV dosyasıdır:
+
+```
+Name, Age, Gender
+John, 35, Male
+Jane, 28, Female
+```
+
+Bu dosya üç sütuna sahip bir veri kümesini temsil eder. İlk satır, sütun başlıklarını içerir ve her bir sütun bir veri öğesi türünü belirtir. Diğer satırlar, veri kayıtlarını temsil eder ve her sütun, o veri kaydındaki ilgili veri öğesini içerir.
+
+Go dilinde, encoding/csv paketi kullanılarak CSV dosyaları okunabilir veya yazılabilir. Bu paket, bir CSV dosyasını okumak veya yazmak için gereken işlevleri sağlar. Paket, CSV dosyalarını okumak için bir csv.Reader ve CSV dosyalarını yazmak için bir csv.Writer türü sağlar. Bu türler, okuma veya yazma işlemlerini gerçekleştirmek için bir dosya nesnesi veya başka bir girdi/çıktı kaynağı ile kullanılabilir.
+
+Örnek kod
+
+```
+package main
+
+import (
+	"encoding/csv"
+	"fmt"
+	"io"
+	"log"
+	"os"
+)
+
+func main() {
+	// CSV dosyasını açın
+	f, err := os.Open("data.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	// CSV okuyucuyu oluşturun
+	r := csv.NewReader(f)
+
+	// Satırları okuyun
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			// EOF (dosya sonu) durumunda döngüden çıkın
+			break
+		}
+		if err != nil {
+			// Hata durumunda hata nesnesini yazdırın ve döngüden çıkın
+			log.Fatal(err)
+		}
+
+		// Satırı işleyin
+		fmt.Println(record)
+	}
+}
+
+```
