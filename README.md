@@ -1,25 +1,82 @@
 # Go-Guide
 
-## Enum
+Örnek olarak, önceden oluşturduğumuz "users" tablosuna yeni bir sütun eklemek için SQL sorgusu hazırlayalım ve daha sonra sorguyu çalıştıralım:
 
-<img width="450" alt="image" src="https://user-images.githubusercontent.com/56068905/221755851-fcb7723c-c7b4-4e45-80a5-44582c1ffb70.png">
+```
+func addColumn(db *sql.DB, colName string, colType string) error {
+    // SQL sorgusunu hazırla
+    query := "ALTER TABLE users ADD COLUMN " + colName + " " + colType
+    stmt, err := db.Prepare(query)
+    if err != nil {
+        return err
+    }
+    defer stmt.Close()
 
-## Convert
+    // Sorguyu çalıştır
+    _, err = stmt.Exec()
+    if err != nil {
+        return err
+    }
+    return nil
+}
+```
+Yukarıdaki fonksiyon, "db.Prepare" fonksiyonunu kullanarak önceden hazırlanmış bir SQL sorgusu oluşturur ve "db.Exec" fonksiyonunu kullanarak sorguyu çalıştırır.
 
-<img width="549" alt="image" src="https://user-images.githubusercontent.com/56068905/221757378-e247e4cc-24ea-4595-af7b-c33160ad7b85.png">
+Ayrıca, "db.Exec" fonksiyonu kullanarak aynı işlemi tek bir satırda da gerçekleştirebiliriz:
 
-## Output
+```
+func addColumn(db *sql.DB, colName string, colType string) error {
+    // SQL sorgusunu hazırla ve çalıştır
+    query := "ALTER TABLE users ADD COLUMN " + colName + " " + colType
+    _, err := db.Exec(query)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+```
+Bu örnekte, "db.Exec" fonksiyonu kullanılarak sorgu doğrudan çalıştırılır. "db.Prepare" ve "db.Exec" fonksiyonları arasındaki temel fark, bir sorgunun kaç kez çalıştırılacağıdır. Eğer aynı sorgu birden fazla kez çalıştırılacaksa, "db.Prepare" fonksiyonu kullanılarak sorgu önceden hazırlanabilir ve daha sonra "db.Exec" fonksiyonu kullanılarak çalıştırılabilir. Bu, performansı artırabilir ve daha az kod yazmamızı sağlar.
 
-<img width="447" alt="image" src="https://user-images.githubusercontent.com/56068905/221759047-3b44d643-cac2-4ba0-8460-330dcb819fc3.png">
+Ayrıca başka fonksiyonlarda vardır.
 
-## Input
+"db.Query": SQL sorgusu çalıştırır ve sonuçları verir. Örneğin:
 
-<img width="440" alt="image" src="https://user-images.githubusercontent.com/56068905/221761689-bb94ce6b-49e6-4477-ae2e-b83046aa07d1.png">
+```
+rows, err := db.Query("SELECT * FROM users")
+```
 
-## Array & Map
+"db.QueryRow": SQL sorgusu çalıştırır ve yalnızca bir satırın sonucunu verir. Örneğin:
 
-<img width="605" alt="image" src="https://user-images.githubusercontent.com/56068905/221902242-1bee1bfa-0ae0-45f5-b1b1-b046347eabf3.png">
+```
+var name string
+err := db.QueryRow("SELECT name FROM users WHERE id = ?", 1).Scan(&name)
+```
 
-## Kanal
+"db.Exec": SQL sorgusu çalıştırır ve sonucu döndürmez. Örneğin:
 
-<img width="553" alt="image" src="https://user-images.githubusercontent.com/56068905/222152423-e30ff9a4-9daf-48a1-aa74-404e8e325273.png">
+```
+result, err := db.Exec("UPDATE users SET name = ? WHERE id = ?", "John", 1)
+```
+
+"tx.Exec": Bir işlem içinde (transaction) SQL sorgusu çalıştırır ve sonucu döndürmez. Örneğin:
+
+```
+tx, err := db.Begin()
+result, err := tx.Exec("UPDATE users SET name = ? WHERE id = ?", "John", 1)
+```
+
+"stmt.Exec": Hazırlanan bir SQL ifadesini çalıştırır ve sonucu döndürmez. Örneğin:
+
+```
+stmt, err := db.Prepare("INSERT INTO users(name, age) VALUES(?, ?)")
+result, err := stmt.Exec("John", 30)
+```
+
+"stmt.Query": Hazırlanan bir SQL ifadesini çalıştırır ve sonuçları verir. Örneğin:
+
+```
+stmt, err := db.Prepare("SELECT * FROM users WHERE age > ?")
+rows, err := stmt.Query(30)
+```
+
+Bu fonksiyonlar, Go dilinde "database/sql" paketinin kullanımı ile birlikte kullanılır ve SQL veritabanlarına erişmek için oldukça faydalıdır.
