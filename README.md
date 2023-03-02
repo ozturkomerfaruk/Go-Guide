@@ -1,6 +1,6 @@
 # Go-Guide
 
-Örnek olarak, önceden oluşturduğumuz "users" tablosuna yeni bir sütun eklemek için SQL sorgusu hazırlayalım ve daha sonra sorguyu çalıştıralım:
+Örnek olarak, "users" tablosuna yeni bir sütun eklemek için SQL sorgusu hazırlayalım ve daha sonra sorguyu çalıştıralım:
 
 ```
 func addColumn(db *sql.DB, colName string, colType string) error {
