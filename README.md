@@ -1,5 +1,105 @@
 # Go-Guide
 
+Veri tabanına bağlanma
+
+```
+db, err := sql.Open("mysql", "root:qwer1234@/omerdb1")
+if err != nil {
+    panic(err.Error())
+}
+defer db.Close()
+```
+
+create table
+```
+func createTable(db *sql.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS users (
+            id INT NOT NULL AUTO_INCREMENT,
+            username VARCHAR(50) NOT NULL,
+            PRIMARY KEY (id)
+        )
+    `
+	_, err := db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+```
+
+insert Data
+```
+func insertData(db *sql.DB) error {
+	sql := `
+        INSERT INTO users (username)
+        VALUES (?)
+    `
+	result, err := db.Exec(sql, "deneme")
+	if err != nil {
+		return err
+	}
+	id, _ := result.LastInsertId()
+	log.Println("Data inserted successfully, ID:", id)
+	return nil
+}
+```
+
+fetchAllData
+```
+func fetchAllData(db *sql.DB) ([]User, error) {
+	var users []User
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Username); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+```
+
+get user by ID
+```
+func getUserByID(db *sql.DB, id string) (User, error) {
+	var user User
+	row := db.QueryRow("SELECT id, username FROM users WHERE id = ?", id)
+	if err := row.Scan(&user.ID, &user.Username); err != nil {
+		if err == sql.ErrNoRows {
+			return user, fmt.Errorf("User not found")
+		}
+		return user, err
+	}
+	return user, nil
+}
+```
+add data
+```
+func addData(db *sql.DB, user User) error {
+	stmt, err := db.Prepare("INSERT INTO users(username) VALUES (?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.Username)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+```
+
 Örnek olarak, "users" tablosuna yeni bir sütun eklemek için SQL sorgusu hazırlayalım ve daha sonra sorguyu çalıştıralım:
 
 ```
